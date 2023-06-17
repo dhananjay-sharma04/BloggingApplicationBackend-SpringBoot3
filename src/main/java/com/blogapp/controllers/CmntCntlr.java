@@ -4,6 +4,8 @@ import com.blogapp.dto.CmntDto;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
 import com.blogapp.services.impl.CmntSvcImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,15 @@ import java.util.Collections;
 @CrossOrigin
 @Slf4j
 @RequestMapping(value = "/comments")
+@Tag(name = "Command Controller", description = "Set key value pair for any configuration for search.")
 public class CmntCntlr {
     @Autowired
     private CmntSvcImpl cmntSvc;
+    @Operation(
+            operationId = "getCmntList",
+            summary = "To simply search any keyword in file, Call this API",
+            description = "saveSetting method is HTTP POST mapping so to store data in database."
+    )
     @GetMapping(value = "/getByPostId/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Response> getCmntList(@PathVariable("postId") @Valid Long id) {
         try {
@@ -50,7 +58,7 @@ public class CmntCntlr {
         }
     }
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> createCmnt(@RequestBody @Valid CmntDto cmntDto) {
+    public ResponseEntity<Response> createCmnt(@RequestBody @Valid CmntDto cmntDto, @RequestParam @Valid Long userId, @RequestParam @Valid Long postId) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -60,7 +68,7 @@ public class CmntCntlr {
                             .message("comments Added successfully!")
                             .method("CmntCntlr.createCmnt")
                             .executionMessage("Implemented business logic of Simple Search class method")
-                            .data(Collections.singletonMap("comment", cmntSvc.createCmnt(cmntDto)))
+                            .data(Collections.singletonMap("comment", cmntSvc.createCmnt(cmntDto, userId, postId)))
                             .build()
             );
         } catch (ResourceNotFound resourceNotFound) {

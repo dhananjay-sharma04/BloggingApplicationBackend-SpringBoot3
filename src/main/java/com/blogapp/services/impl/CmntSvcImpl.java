@@ -53,28 +53,28 @@ public class CmntSvcImpl implements CmntSvc {
         }
     }
     @Override
-    public Cmnt createCmnt(CmntDto cmntDto) throws ResourceNotFound {
+    public Cmnt createCmnt(CmntDto cmntDto, Long userId, Long postId) throws ResourceNotFound {
         log.info("Started execution of createCmnt method");
 
-        log.debug("checking User with id : {} exist or not.", cmntDto.getUserId());
-        Optional<Usr> user = usrRepo.findById(cmntDto.getUserId());
+        log.debug("checking User with id : {} exist or not.", userId);
+        Optional<Usr> user = usrRepo.findById(userId);
 
-        log.debug("checking Post with id : {} exist or not.", cmntDto.getPostId());
-        Optional<Post> post = postRepo.findById(cmntDto.getPostId());
+        log.debug("checking Post with id : {} exist or not.", postId);
+        Optional<Post> post = postRepo.findById(postId);
 
         if (user.isEmpty()){
-            log.error("There is no user with id: {} found in database. Please check.", cmntDto.getUserId());
-            throw new ResourceNotFound("No user found in database with id : " + cmntDto.getUserId());
+            log.error("There is no user with id: {} found in database. Please check.", userId);
+            throw new ResourceNotFound("No user found in database with id : " + userId);
         } else if (post.isEmpty()){
-            log.error("There is no post with id: {} found in database. Please check.", cmntDto.getPostId());
-            throw new ResourceNotFound("No post found in database with id : " + cmntDto.getPostId());
+            log.error("There is no post with id: {} found in database. Please check.", postId);
+            throw new ResourceNotFound("No post found in database with id : " + postId);
         }
         // Initializing model
         Cmnt cmnt = dtoConverter.convert(cmntDto, Cmnt.class);
         cmnt.setUser(user.get());
         cmnt.setPost(post.get());
         cmntRepo.save(cmnt);
-        log.info("Post added Successfully");
+        log.info("Comment added Successfully");
         return cmnt;
     }
 

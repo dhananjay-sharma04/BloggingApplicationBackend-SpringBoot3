@@ -13,6 +13,6 @@ import java.util.Map;
 @Service
 public interface CmntSvc {
     List<Cmnt> getCmntByPost(Long postId) throws ResourceNotFound;
-    Cmnt createCmnt(CmntDto cmntDto) throws ResourceNotFound;
+    Cmnt createCmnt(CmntDto cmntDto, Long userId, Long postId) throws ResourceNotFound;
     Map<String, Boolean> delCmnt(Long id) throws ResourceNotFound;
 }
