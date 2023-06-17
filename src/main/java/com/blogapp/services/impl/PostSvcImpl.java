@@ -185,7 +185,7 @@ public class PostSvcImpl implements PostSvc {
     public Map<String, Boolean> delPost(Long id) throws ResourceNotFound {
         log.info("Started execution of delPost method");
 
-        // checking category exists or not
+        // checking post exists or not
         Optional<Post> postExist = postRepo.findById(id);
 
         Map<String, Boolean> response = new HashMap<>();

@@ -88,4 +88,33 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
         </createTable>
     </changeSet>
 
+    <changeSet id="DS20230617-4" author="Dhananjay Sharma">
+        <createTable tableName="comments">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="comment_content" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submitted_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_id" type="BIGINT">
+                <constraints foreignKeyName="comment_related_to_following_post"
+                             referencedTableName="categories"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="comment_related_to_following_user"
+                             referencedTableName="categories"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
