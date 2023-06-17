@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd
+http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
+
+    <changeSet id="DS20230606-1" author="Dhananjay Sharma">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="usr_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="usr_email" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="usr_pass" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="usr_abt" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submitted_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="DS20230614-2" author="Dhananjay Sharma">
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="catg_title" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="catg_description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submitted_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="DS20230614-3" author="Dhananjay Sharma">
+            <createTable tableName="posts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="post_title" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_content" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_image" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submitted_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+                <column name="category_id" type="BIGINT">
+                    <constraints foreignKeyName="post_related_to_following_category"
+                                 referencedTableName="categories"
+                                 referencedColumnNames="id"
+                                 nullable="false"/>
+                </column>
+                <column name="user_id" type="BIGINT">
+                    <constraints foreignKeyName="post_related_to_following_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 nullable="false"/>
+                </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
