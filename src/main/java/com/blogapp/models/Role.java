@@ -10,46 +10,21 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "roles")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Usr {
+public class Role {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usr_name", nullable = false)
+    @Column(name = "role_name", nullable = false)
     private String name;
-
-    @Column(name = "usr_email", unique = true, nullable = false)
-    private String email;
-
-    @Column(name = "usr_pass", nullable = false)
-    private String  password;
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private Set<Role> roles = new HashSet<>();
-
-    @Column(name = "usr_abt", nullable = false)
-    private String about;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Cmnt> comments = new HashSet<>();
 
     @CreationTimestamp
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
