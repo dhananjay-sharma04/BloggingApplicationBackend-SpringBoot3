@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,8 @@ public class UsrSvcImpl implements UsrSvc {
 
     @Autowired
     private DtoConverter<UsrDto, Usr> dtoConverter;
-
+    @Autowired(required = false)
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UsrRepo usrRepo;
 
@@ -58,6 +60,7 @@ public class UsrSvcImpl implements UsrSvc {
         Usr usr;
         if (userList.isEmpty()) {
             usr = dtoConverter.convert(usrDto, Usr.class);
+            usr.setPassword(passwordEncoder.encode(usrDto.getPassword()));
             usrRepo.save(usr);
             log.info("User added Successfully");
         } else {
