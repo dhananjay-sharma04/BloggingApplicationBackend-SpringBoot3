@@ -34,8 +34,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorization) -> authorization
-                        .requestMatchers("").hasRole("ADMIN")
-                        .requestMatchers("auth/login").permitAll()
+                        .requestMatchers("").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(this.jwtAuthenticationEntryPoint))

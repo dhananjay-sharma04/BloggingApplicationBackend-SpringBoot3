@@ -15,9 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,7 +23,7 @@ public class UsrSvcImpl implements UsrSvc {
 
     @Autowired
     private DtoConverter<UsrDto, Usr> dtoConverter;
-    @Autowired(required = false)
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UsrRepo usrRepo;
