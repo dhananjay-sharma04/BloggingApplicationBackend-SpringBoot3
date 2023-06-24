@@ -28,14 +28,31 @@ public class SecurityConfiguration {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    public static final String[] PUBLIC_URL = {
+            "auth/**",
+            "swagger-ui/**",
+            "/api",
+            "swagger-resource/**",
+            "webjars/**",
+            "swagger-ui.html"
+    };
+    public static final String[] ADMIN_URL = {
+            "categories/**",
+            "users/**",
+    };
+    public static final String[] SHARED_URL = {
+            "users/update/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorization) -> authorization
-                        .requestMatchers("").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("auth/**").permitAll()
+                        .requestMatchers(ADMIN_URL).hasRole("ADMIN")
+                        .requestMatchers(SHARED_URL).hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(PUBLIC_URL).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(this.jwtAuthenticationEntryPoint))
