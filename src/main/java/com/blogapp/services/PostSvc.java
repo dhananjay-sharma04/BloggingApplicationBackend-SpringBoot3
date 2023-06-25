@@ -17,7 +17,7 @@ public interface PostSvc {
     List<Post> getPostByCategory(Long catId) throws ResourceNotFound;
     List<Post> getPostByUser(Long usrId) throws ResourceNotFound;
     List<Post> searchPost(String keyword) throws ResourceNotFound;
-    Post createPost(PostDto postDto, Long usrId, Long catId) throws ResourceNotFound;
+    Post createPost(PostDto postDto, Long usrId, String catTitle) throws ResourceNotFound;
     Post updatePost(Long id, PostDto postDto) throws ResourceNotFound;
     Map<String, Boolean> delPost(Long id) throws ResourceNotFound;
 }

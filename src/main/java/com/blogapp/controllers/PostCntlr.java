@@ -225,7 +225,7 @@ public class PostCntlr {
             summary = "To publish new post in application and store in database, Call this API",
             description = "createPost method is HTTP POST mapping so to store data from database."
     )
-    public ResponseEntity<Response> createPost(@RequestBody @Valid PostDto postDto, @RequestParam @Valid Long userId, @RequestParam @Valid Long catId) {
+    public ResponseEntity<Response> createPost(@RequestBody @Valid PostDto postDto, @RequestParam @Valid Long userId, @RequestParam @Valid String catTitle) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -235,7 +235,7 @@ public class PostCntlr {
                             .message("Post Added successfully!")
                             .method("PostCntlr.createPost")
                             .executionMessage("Implemented business logic of Simple Search class method")
-                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, userId, catId)))
+                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, userId, catTitle)))
                             .build()
             );
         } catch (ResourceNotFound resourceNotFound) {

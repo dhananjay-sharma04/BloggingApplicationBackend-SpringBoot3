@@ -134,26 +134,26 @@ public class PostSvcImpl implements PostSvc {
     }
 
     @Override
-    public Post createPost(PostDto postDto, Long usrId, Long catId) throws ResourceNotFound {
+    public Post createPost(PostDto postDto, Long usrId, String catTitle) throws ResourceNotFound {
         log.info("Started execution of createPost method");
 
         log.debug("checking User with id : {} exist or not.", usrId);
         Optional<Usr> user = usrRepo.findById(usrId);
 
-        log.debug("checking Category with id : {} exist or not.", catId);
-        Optional<Catg> category = catgRepo.findById(catId);
+        log.debug("checking Category with id : {} exist or not.", catTitle);
+        Catg category = catgRepo.findByCatgTitle(catTitle);
 
         if (user.isEmpty()){
             log.error("There is no user with id: {} found in database. Please check.", usrId);
             throw new ResourceNotFound("No user found in database with id : " + usrId);
-        } else if (category.isEmpty()){
-            log.error("There is no category with id: {} found in database. Please check.", catId);
-            throw new ResourceNotFound("No category found in database with id : " + catId);
+        } else if (category == null){
+            log.error("There is no category with id: {} found in database. Please check.", catTitle);
+            throw new ResourceNotFound("No category found in database with id : " + catTitle);
         }
         // Initializing model
         Post post = dtoConverter.convert(postDto, Post.class);
         post.setImageName("default.png");
-        post.setCategory(category.get());
+        post.setCategory(category);
         post.setUser(user.get());
         postRepo.save(post);
         log.info("Post added Successfully");

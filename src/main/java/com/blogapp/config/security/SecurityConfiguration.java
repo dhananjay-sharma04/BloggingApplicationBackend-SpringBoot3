@@ -41,7 +41,8 @@ public class SecurityConfiguration {
             "users/**",
     };
     public static final String[] SHARED_URL = {
-            "users/update/**"
+            "users/update/**",
+            "categories/get"
     };
 
     @Bean
