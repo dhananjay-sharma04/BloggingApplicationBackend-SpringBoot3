@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,7 +23,8 @@ public class UsrSvcImpl implements UsrSvc {
 
     @Autowired
     private DtoConverter<UsrDto, Usr> dtoConverter;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UsrRepo usrRepo;
 
@@ -58,6 +58,7 @@ public class UsrSvcImpl implements UsrSvc {
         Usr usr;
         if (userList.isEmpty()) {
             usr = dtoConverter.convert(usrDto, Usr.class);
+            usr.setPassword(passwordEncoder.encode(usrDto.getPassword()));
             usrRepo.save(usr);
             log.info("User added Successfully");
         } else {
@@ -87,7 +88,7 @@ public class UsrSvcImpl implements UsrSvc {
             userExist.get().setId(id);
             userExist.get().setName(usrDto.getName());
             userExist.get().setEmail(usrDto.getEmail());
-            userExist.get().setPassword(usrDto.getPassword());
+            userExist.get().setPassword(passwordEncoder.encode(usrDto.getPassword()));
             userExist.get().setAbout(usrDto.getAbout());
             usrRepo.save(userExist.get());
             log.info("User updated successfully with server object");

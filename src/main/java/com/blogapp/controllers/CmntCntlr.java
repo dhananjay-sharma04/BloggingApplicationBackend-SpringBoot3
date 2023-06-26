@@ -21,16 +21,16 @@ import java.util.Collections;
 @CrossOrigin
 @Slf4j
 @RequestMapping(value = "/comments")
-@Tag(name = "Command Controller", description = "Set key value pair for any configuration for search.")
+@Tag(name = "Comment Controller", description = "Api related to fetch, create and delete comment on post")
 public class CmntCntlr {
     @Autowired
     private CmntSvcImpl cmntSvc;
-    @Operation(
-            operationId = "getCmntList",
-            summary = "To simply search any keyword in file, Call this API",
-            description = "saveSetting method is HTTP POST mapping so to store data in database."
-    )
     @GetMapping(value = "/getByPostId/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            operationId = "getByPostId",
+            summary = "To fetch List of Comment on specific post from database, Call this API",
+            description = "getCmntList method is HTTP GET mapping so to get data from database."
+    )
     public ResponseEntity<Response> getCmntList(@PathVariable("postId") @Valid Long id) {
         try {
             return ResponseEntity.ok(
@@ -58,6 +58,11 @@ public class CmntCntlr {
         }
     }
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            operationId = "add",
+            summary = "To comment on specific post, Call this API",
+            description = "createCmnt method is HTTP POST mapping so to store data in database."
+    )
     public ResponseEntity<Response> createCmnt(@RequestBody @Valid CmntDto cmntDto, @RequestParam @Valid Long userId, @RequestParam @Valid Long postId) {
         try {
             return ResponseEntity.ok(
@@ -85,6 +90,11 @@ public class CmntCntlr {
         }
     }
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            operationId = "delete",
+            summary = "To delete commented comment on specific post from database, Call this API",
+            description = "deleteUser method is HTTP DELETE mapping so to delete data in database."
+    )
     public ResponseEntity<Response> deleteCmnt(@PathVariable("id") @Valid Long id) {
         try {
             return ResponseEntity.ok(
