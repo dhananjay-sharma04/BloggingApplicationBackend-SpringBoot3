@@ -88,7 +88,7 @@ public class UsrSvcImpl implements UsrSvc {
             userExist.get().setId(id);
             userExist.get().setName(usrDto.getName());
             userExist.get().setEmail(usrDto.getEmail());
-            userExist.get().setPassword(usrDto.getPassword());
+            userExist.get().setPassword(passwordEncoder.encode(usrDto.getPassword()));
             userExist.get().setAbout(usrDto.getAbout());
             usrRepo.save(userExist.get());
             log.info("User updated successfully with server object");
