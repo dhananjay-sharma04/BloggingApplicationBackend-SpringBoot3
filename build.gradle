@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.28'
 	implementation 'org.javers:javers-spring-boot-starter-sql:5.14.0'
 	implementation group: 'org.hibernate.orm', name: 'hibernate-core', version: '6.2.4.Final'
