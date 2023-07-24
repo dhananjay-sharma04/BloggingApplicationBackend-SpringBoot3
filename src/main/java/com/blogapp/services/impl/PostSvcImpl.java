@@ -152,7 +152,7 @@ public class PostSvcImpl implements PostSvc {
         }
         // Initializing model
         Post post = dtoConverter.convert(postDto, Post.class);
-        post.setImageName("default.png");
+//        post.setImageName("default.png");
         post.setCategory(category);
         post.setUser(user.get());
         postRepo.save(post);

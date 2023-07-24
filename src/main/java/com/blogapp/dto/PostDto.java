@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +20,6 @@ public class PostDto {
     @NotEmpty
     @Size(min = 10, max = 1000, message = "Content must be minimum of 10 and maximum of 1000 characters!!")
     private String content;
+
+    private String imageName;
 }

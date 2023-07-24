@@ -3,17 +3,25 @@ package com.blogapp.controllers;
 import com.blogapp.dto.PostDto;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
+import com.blogapp.services.impl.FileSvcImpl;
 import com.blogapp.services.impl.PostSvcImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -25,6 +33,10 @@ import java.util.Collections;
 public class PostCntlr {
     @Autowired
     private PostSvcImpl postSvc;
+    @Autowired
+    private FileSvcImpl fileSvc;
+    @Value("${project.image}")
+    private String path;
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "get",
@@ -217,13 +229,21 @@ public class PostCntlr {
             );
         }
     }
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "add",
             summary = "To publish new post in application and store in database, Call this API",
             description = "createPost method is HTTP POST mapping so to store data from database."
     )
-    public ResponseEntity<Response> createPost(@RequestBody @Valid PostDto postDto, @RequestParam @Valid Long userId, @RequestParam @Valid String catTitle) {
+    public ResponseEntity<Response> createPost(@Valid @RequestPart MultipartFile image,
+                                               @RequestPart @Valid String title,
+                                               @RequestPart @Valid String content,
+                                               @RequestPart @Valid String userId,
+                                               @RequestPart @Valid String catTitle) throws IOException {
+        PostDto postDto = new PostDto();
+        postDto.setTitle(title);
+        postDto.setContent(content);
+        postDto.setImageName(fileSvc.uploadImage(path, image));
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -233,7 +253,7 @@ public class PostCntlr {
                             .message("Post Added successfully!")
                             .method("PostCntlr.createPost")
                             .executionMessage("Implemented business logic of Simple Search class method")
-                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, userId, catTitle)))
+                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, Long.valueOf(userId), catTitle)))
                             .build()
             );
         } catch (ResourceNotFound resourceNotFound) {
@@ -312,5 +332,12 @@ public class PostCntlr {
                             .build()
             );
         }
+    }
+    @GetMapping(value = "/image/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void downloadImage(@PathVariable("name") String imageName,
+                              HttpServletResponse response) throws IOException {
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        InputStream inputStream = fileSvc.getResource(path, imageName);
+        StreamUtils.copy(inputStream, response.getOutputStream());
     }
 }
