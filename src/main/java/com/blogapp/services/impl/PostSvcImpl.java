@@ -2,7 +2,6 @@ package com.blogapp.services.impl;
 
 import com.blogapp.config.mapperconverter.DtoConverter;
 import com.blogapp.dto.PostDto;
-import com.blogapp.exceptions.ResourceAlreadyExists;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.models.Catg;
 import com.blogapp.models.Post;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -71,7 +71,7 @@ public class PostSvcImpl implements PostSvc {
 
         if (noOfPostField > 0) {
             log.info("{} Posts Field Objects Fetched successfully!", noOfPostField);
-            Pageable pageable = PageRequest.of(page, pageSize);
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by("id").descending());
             return postRepo.findAll(pageable);
         } else {
             log.error("There is no posts fields found in database. Please check.");
@@ -148,7 +148,7 @@ public class PostSvcImpl implements PostSvc {
             throw new ResourceNotFound("No user found in database with id : " + usrId);
         } else if (category == null){
             log.error("There is no category with id: {} found in database. Please check.", catTitle);
-            throw new ResourceNotFound("No category found in database with id : " + catTitle);
+            throw new ResourceNotFound("No category found in database with title : " + catTitle);
         }
         // Initializing model
         Post post = dtoConverter.convert(postDto, Post.class);

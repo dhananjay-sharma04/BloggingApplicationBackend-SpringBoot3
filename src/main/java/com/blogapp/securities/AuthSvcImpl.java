@@ -42,9 +42,9 @@ public class AuthSvcImpl {
     private RoleRepo roleRepo;
 
     public JwtResponse authenticate(JwtAuthRequest jwtAuthRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthRequest.getEmail(), jwtAuthRequest.getPassword());
         this.authenticationManager.authenticate(authenticationToken);
-        UserDetails userDetails = this.customUsrDetailSvc.loadUserByUsername(jwtAuthRequest.getUsername());
+        UserDetails userDetails = this.customUsrDetailSvc.loadUserByUsername(jwtAuthRequest.getEmail());
         String token = this.jwtUtil.generateToken(userDetails);
 
         JwtResponse jwtResponse = new JwtResponse();

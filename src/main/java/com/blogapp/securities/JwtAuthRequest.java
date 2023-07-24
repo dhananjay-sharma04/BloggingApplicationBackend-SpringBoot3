@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class JwtAuthRequest {
 
     @NotEmpty
-    @Email(message = "Email address is not Valid !!")
-    private String username; // Here User email acts as username
+//    @Email(message = "Email address is not Valid !!")
+    private String email; // Here User email acts as username
 
     @NotEmpty
 //    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$",

@@ -29,20 +29,24 @@ public class SecurityConfiguration {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     public static final String[] PUBLIC_URL = {
-            "auth/**",
-            "swagger-ui/**",
-            "/api",
-            "swagger-resource/**",
-            "webjars/**",
-            "swagger-ui.html"
+            "/**",
+//            "swagger-ui/**",
+//            "/api",
+//            "swagger-resource/**",
+//            "webjars/**",
+//            "swagger-ui.html"
     };
     public static final String[] ADMIN_URL = {
-            "categories/**",
+            "categories/add",
+            "category/update",
+            "category/delete",
+            "categories/get",
             "users/**",
     };
     public static final String[] SHARED_URL = {
+            "comments/**",
             "users/update/**",
-            "categories/get"
+            "categories/get",
     };
 
     @Bean
@@ -51,8 +55,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorization) -> authorization
-                        .requestMatchers(ADMIN_URL).hasRole("ADMIN")
-                        .requestMatchers(SHARED_URL).hasAnyRole("ADMIN", "USER")
+//                        .requestMatchers(ADMIN_URL).hasRole("ADMIN")
+//                        .requestMatchers(SHARED_URL).hasAnyRole("ADMIN", "USER")
                         .requestMatchers(PUBLIC_URL).permitAll()
                         .anyRequest().authenticated()
                 )

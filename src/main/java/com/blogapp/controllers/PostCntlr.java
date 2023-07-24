@@ -1,8 +1,6 @@
 package com.blogapp.controllers;
 
-import com.blogapp.dto.CatgDto;
 import com.blogapp.dto.PostDto;
-import com.blogapp.exceptions.ResourceAlreadyExists;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
 import com.blogapp.services.impl.PostSvcImpl;
