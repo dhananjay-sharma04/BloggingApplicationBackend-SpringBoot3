@@ -40,8 +40,6 @@ public class CatgCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Categories list fetched successfully!")
-                            .method("CatgCntlr.getCatgList")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("categories", catgSvc.getCatgList()))
                             .build()
             );
@@ -52,8 +50,6 @@ public class CatgCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("CatgCntlr.getCatgList")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -72,8 +68,6 @@ public class CatgCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Category fetched successfully!")
-                            .method("CatgCntlr.getCatgList")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("categories", catgSvc.getCatgById(id)))
                             .build()
             );
@@ -84,8 +78,6 @@ public class CatgCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("CatgCntlr.getCatgList")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -104,8 +96,6 @@ public class CatgCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Category Added successfully!")
-                            .method("CatgCntlr.createCatg")
-                            .executionMessage("Implemented business logic of Simple Search class method")
                             .data(Collections.singletonMap("categories", catgSvc.createCatg(catgDto)))
                             .build()
             );
@@ -116,8 +106,6 @@ public class CatgCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceAlreadyExists.getMessage())
-                            .method("CatgCntlr.createCatg")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -136,8 +124,6 @@ public class CatgCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Category updated successfully!")
-                            .method("CatgCntlr.updateCatg")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("categories", catgSvc.updateCatg(id, catgDto)))
                             .build()
             );
@@ -148,8 +134,6 @@ public class CatgCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(exception.getMessage())
-                            .method("CatgCntlr.updateCatg")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -168,8 +152,6 @@ public class CatgCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Category object deleted successfully!")
-                            .method("CatgCntlr.deleteCatg")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(catgSvc.delCatg(id))
                             .build()
             );
@@ -180,8 +162,6 @@ public class CatgCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("CatgCntlr.deleteCatg")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }

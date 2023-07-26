@@ -1,6 +1,7 @@
 package com.blogapp.exceptions;
 
 import com.blogapp.response.Response;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,6 @@ public class GlobalExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST)
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message("Input Fields are Not Valid!")
-                        .method("GlobalExceptionHandler.handleMethodArgumentNotValidException")
-                        .executionMessage("Implemented business logic of GlobalExceptionHandler class method")
                         .data(Collections.singletonMap("error", response))
                         .build()
         );
@@ -52,8 +51,6 @@ public class GlobalExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST)
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message("Arguments types are Mismatch!")
-                        .method("GlobalExceptionHandler.handleMethodArgumentTypeMismatchException")
-                        .executionMessage("Implemented business logic of GlobalExceptionHandler class method")
                         .data(Collections.singletonMap("error", response))
                         .build()
         );
@@ -70,8 +67,6 @@ public class GlobalExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST)
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message("Missing ServletRequest Parameter!")
-                        .method("GlobalExceptionHandler.handleMissingServletRequestParameterException")
-                        .executionMessage("Implemented business logic of GlobalExceptionHandler class method")
                         .data(Collections.singletonMap("error", response))
                         .build()
         );
@@ -88,8 +83,22 @@ public class GlobalExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST)
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message("DataIntegrity Violation!")
-                        .method("GlobalExceptionHandler.handleDataIntegrityViolationException")
-                        .executionMessage("Implemented business logic of GlobalExceptionHandler class method")
+                        .data(Collections.singletonMap("error", response))
+                        .build()
+        );
+    }
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    public ResponseEntity<Response> handleFileSizeLimitExceededException (FileSizeLimitExceededException exception){
+        Map<String, String> response = new HashMap<>();
+        String name = "FileSizeLimitExceeded";
+        String message = exception.getMessage();
+        response.put(name, message);
+        return ResponseEntity.ok(
+                Response.builder()
+                        .responseTime(LocalDateTime.now())
+                        .status(HttpStatus.BAD_REQUEST)
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message("FileSizeLimitExceededException!")
                         .data(Collections.singletonMap("error", response))
                         .build()
         );
@@ -106,8 +115,6 @@ public class GlobalExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST)
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message("HttpMessage Not Readable!")
-                        .method("GlobalExceptionHandler.handleDataIntegrityViolationException")
-                        .executionMessage("Implemented business logic of GlobalExceptionHandler class method")
                         .data(Collections.singletonMap("error", response))
                         .build()
         );

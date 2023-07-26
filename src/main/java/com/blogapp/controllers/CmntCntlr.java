@@ -39,8 +39,6 @@ public class CmntCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Comments list fetched successfully!")
-                            .method("CmntCntlr.getCmntList")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("comments", cmntSvc.getCmntByPost(id)))
                             .build()
             );
@@ -51,8 +49,6 @@ public class CmntCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("CmntCntlr.getCmntList")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -71,8 +67,6 @@ public class CmntCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("comments Added successfully!")
-                            .method("CmntCntlr.createCmnt")
-                            .executionMessage("Implemented business logic of Simple Search class method")
                             .data(Collections.singletonMap("comment", cmntSvc.createCmnt(cmntDto, userId, postId)))
                             .build()
             );
@@ -83,8 +77,6 @@ public class CmntCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("CmntCntlr.createCmnt")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -103,8 +95,6 @@ public class CmntCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("comments object deleted successfully!")
-                            .method("CmntCntlr.deleteCmnt")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(cmntSvc.delCmnt(id))
                             .build()
             );
@@ -115,8 +105,6 @@ public class CmntCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("CmntCntlr.deleteCmnt")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }

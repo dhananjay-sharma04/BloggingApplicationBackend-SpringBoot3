@@ -41,8 +41,6 @@ public class AuthController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("User login successfully!")
-                            .method("AuthController.login")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("login", authSvc.authenticate(jwtAuthRequest)))
                             .build()
             );
@@ -53,8 +51,6 @@ public class AuthController {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(exception.getMessage())
-                            .method("AuthController.login")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -73,8 +69,6 @@ public class AuthController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("SignUp successfully!")
-                            .method("AuthController.signUpUsr")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("userDetails", authSvc.signUpUsr(usrDto)))
                             .build()
             );
@@ -85,8 +79,6 @@ public class AuthController {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(exception.getMessage())
-                            .method("AuthController.signUpUsr")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }

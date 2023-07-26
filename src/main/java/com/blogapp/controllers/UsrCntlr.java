@@ -42,8 +42,6 @@ public class UsrCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Users list fetched successfully!")
-                            .method("UsrCntlr.getUsrList")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("users", usrSvc.getUsrList(page, pageSize)))
                             .build()
             );
@@ -54,8 +52,6 @@ public class UsrCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("UsrCntlr.getUsrList")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -74,8 +70,6 @@ public class UsrCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("User Added successfully!")
-                            .method("UsrCntlr.createUsr")
-                            .executionMessage("Implemented business logic of Simple Search class method")
                             .data(Collections.singletonMap("users", usrSvc.createUsr(usrDto)))
                             .build()
             );
@@ -86,8 +80,6 @@ public class UsrCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceAlreadyExists.getMessage())
-                            .method("UsrCntlr.createUsr")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -106,8 +98,6 @@ public class UsrCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("User updated successfully!")
-                            .method("UsrCntlr.updateUsr")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("users", usrSvc.updateUsr(id, usrDto)))
                             .build()
             );
@@ -118,8 +108,6 @@ public class UsrCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(exception.getMessage())
-                            .method("UsrCntlr.updateUsr")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -138,8 +126,6 @@ public class UsrCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("User object deleted successfully!")
-                            .method("UsrCntlr.deleteUser")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(usrSvc.delUsr(id))
                             .build()
             );
@@ -150,8 +136,6 @@ public class UsrCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("UsrCntlr.deleteUser")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }

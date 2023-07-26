@@ -3,25 +3,18 @@ package com.blogapp.controllers;
 import com.blogapp.dto.PostDto;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
-import com.blogapp.services.impl.FileSvcImpl;
 import com.blogapp.services.impl.PostSvcImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -33,10 +26,6 @@ import java.util.Collections;
 public class PostCntlr {
     @Autowired
     private PostSvcImpl postSvc;
-    @Autowired
-    private FileSvcImpl fileSvc;
-    @Value("${project.image}")
-    private String path;
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "get",
@@ -51,8 +40,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Posts list fetched successfully!")
-                            .method("PostCntlr.getPostList")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.getPostList()))
                             .build()
             );
@@ -63,8 +50,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.getPostList")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -83,8 +68,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post fetched successfully!")
-                            .method("PostCntlr.getPostById")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.getPostById(id)))
                             .build()
             );
@@ -95,8 +78,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.getPostById")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -115,8 +96,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post fetched successfully!")
-                            .method("PostCntlr.getPostById")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.getPostByUser(id)))
                             .build()
             );
@@ -127,8 +106,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.getPostById")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -147,8 +124,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post fetched successfully!")
-                            .method("PostCntlr.getPostById")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.getPostByCategory(id)))
                             .build()
             );
@@ -159,8 +134,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.getPostById")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -179,8 +152,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Posts fetched successfully!")
-                            .method("PostCntlr.searchPost")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.searchPost(keyword)))
                             .build()
             );
@@ -191,8 +162,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.searchPost")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -211,8 +180,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post list fetched successfully!")
-                            .method("PostCntlr.getPostList")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.getPostList(page, pageSize)))
                             .build()
             );
@@ -223,27 +190,19 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.getPostList")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
     }
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "add",
             summary = "To publish new post in application and store in database, Call this API",
             description = "createPost method is HTTP POST mapping so to store data from database."
     )
-    public ResponseEntity<Response> createPost(@Valid @RequestPart MultipartFile image,
-                                               @RequestPart @Valid String title,
-                                               @RequestPart @Valid String content,
-                                               @RequestPart @Valid String userId,
-                                               @RequestPart @Valid String catTitle) throws IOException {
-        PostDto postDto = new PostDto();
-        postDto.setTitle(title);
-        postDto.setContent(content);
-        postDto.setImageName(fileSvc.uploadImage(path, image));
+    public ResponseEntity<Response> createPost(@Valid @RequestBody PostDto postDto,
+                                               @Valid @RequestParam Long userId,
+                                               @Valid @RequestParam String catTitle) throws IOException {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -251,9 +210,7 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post Added successfully!")
-                            .method("PostCntlr.createPost")
-                            .executionMessage("Implemented business logic of Simple Search class method")
-                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, Long.valueOf(userId), catTitle)))
+                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, userId, catTitle)))
                             .build()
             );
         } catch (ResourceNotFound resourceNotFound) {
@@ -263,8 +220,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.createPost")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -283,8 +238,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post updated successfully!")
-                            .method("PostCntlr.updatePost")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(Collections.singletonMap("posts", postSvc.updatePost(id, postDto)))
                             .build()
             );
@@ -295,8 +248,6 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.updatePost")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
@@ -315,8 +266,6 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post object deleted successfully!")
-                            .method("PostCntlr.deletePost")
-                            .executionMessage("Implemented business logic of service class method")
                             .data(postSvc.delPost(id))
                             .build()
             );
@@ -327,17 +276,8 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
-                            .method("PostCntlr.deletePost")
-                            .executionMessage("Implemented business logic of service class method")
                             .build()
             );
         }
-    }
-    @GetMapping(value = "/image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public void downloadImage(@PathVariable("name") String imageName,
-                              HttpServletResponse response) throws IOException {
-        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        InputStream inputStream = fileSvc.getResource(path, imageName);
-        StreamUtils.copy(inputStream, response.getOutputStream());
     }
 }
