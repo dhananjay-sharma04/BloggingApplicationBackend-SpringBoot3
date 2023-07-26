@@ -38,7 +38,10 @@ public class Usr implements UserDetails {
     private String email;
 
     @Column(name = "usr_pass", nullable = false)
-    private String  password;
+    private String password;
+
+    @Column(name = "usr_image", length = 100)
+    private String imageName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -50,12 +53,6 @@ public class Usr implements UserDetails {
 
     @Column(name = "usr_abt", nullable = false)
     private String about;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Cmnt> comments = new HashSet<>();
 
     @CreationTimestamp
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -73,6 +70,11 @@ public class Usr implements UserDetails {
                 .stream()
                 .map((role -> new SimpleGrantedAuthority(role.getName())))
                 .toList();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
     @Override

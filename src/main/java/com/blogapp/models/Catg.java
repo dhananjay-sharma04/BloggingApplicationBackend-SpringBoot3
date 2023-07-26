@@ -31,9 +31,6 @@ public class Catg {
     @Column(name = "catg_description", nullable = false)
     private String catgDesc;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Post> posts = new HashSet<>();
-
     @CreationTimestamp
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "submitted_date")

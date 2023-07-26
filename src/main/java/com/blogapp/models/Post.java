@@ -32,7 +32,7 @@ public class Post {
     @Column(name = "post_content", length = 10000, nullable = false)
     private String content;
 
-    @Column(name = "post_image", length = 100, nullable = false)
+    @Column(name = "post_image", length = 100)
     private String imageName;
 
     @ManyToOne
@@ -42,9 +42,6 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Usr user;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private Set<Cmnt> comments = new HashSet<>();
 
     @CreationTimestamp
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

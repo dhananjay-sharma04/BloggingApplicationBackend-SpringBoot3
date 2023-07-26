@@ -229,7 +229,7 @@ public class PostCntlr {
             );
         }
     }
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             operationId = "add",
             summary = "To publish new post in application and store in database, Call this API",
@@ -333,7 +333,7 @@ public class PostCntlr {
             );
         }
     }
-    @GetMapping(value = "/image/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public void downloadImage(@PathVariable("name") String imageName,
                               HttpServletResponse response) throws IOException {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
