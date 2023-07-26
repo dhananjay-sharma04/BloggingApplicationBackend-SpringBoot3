@@ -12,4 +12,5 @@ import java.io.InputStream;
 public interface FileSvc {
     String uploadImage(MultipartFile file) throws IOException, NullPointerException,MediaTypeNotSupported;
     InputStream getImage(String filename) throws FileNotFoundException;
+    Boolean deleteImage(String filename) throws IOException;
 }

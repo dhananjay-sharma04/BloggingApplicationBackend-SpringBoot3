@@ -25,7 +25,6 @@ public class UsrDto {
             - must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number
             - Can contain special characters""")
     private String  password;
-    private String imageName;
     @NotEmpty
     private String about;
 }

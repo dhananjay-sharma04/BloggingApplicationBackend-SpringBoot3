@@ -1,6 +1,7 @@
 package com.blogapp.controllers;
 
 import com.blogapp.dto.UsrDto;
+import com.blogapp.exceptions.MediaTypeNotSupported;
 import com.blogapp.exceptions.ResourceAlreadyExists;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
@@ -15,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -55,13 +58,14 @@ public class AuthController {
             );
         }
     }
-    @PostMapping(value = "/signUp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/signUp", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "signUpUsr",
             summary = "To register new User in Application, Call this API",
             description = "signUpUsr method is HTTP POST mapping so to store data in database."
     )
-    public ResponseEntity<Response> signUpUsr(@RequestBody @Valid UsrDto usrDto) {
+    public ResponseEntity<Response> signUpUsr(@RequestBody @Valid String usrDto,
+                                              @RequestPart(required = false) @Valid MultipartFile image) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -69,7 +73,7 @@ public class AuthController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("SignUp successfully!")
-                            .data(Collections.singletonMap("userDetails", authSvc.signUpUsr(usrDto)))
+                            .data(Collections.singletonMap("userDetails", authSvc.signUpUsr(usrDto, image)))
                             .build()
             );
         } catch (ResourceAlreadyExists | ResourceNotFound exception) {
@@ -79,6 +83,24 @@ public class AuthController {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(exception.getMessage())
+                            .build()
+            );
+        } catch (MediaTypeNotSupported mediaTypeNotSupported) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                            .message(mediaTypeNotSupported.getMessage())
+                            .build()
+            );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
                             .build()
             );
         }

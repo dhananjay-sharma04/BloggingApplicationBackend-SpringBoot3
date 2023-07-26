@@ -1,22 +1,29 @@
 package com.blogapp.controllers;
 
 import com.blogapp.dto.UsrDto;
+import com.blogapp.exceptions.MediaTypeNotSupported;
 import com.blogapp.exceptions.ResourceAlreadyExists;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
+import com.blogapp.services.impl.FileSvcImpl;
 import com.blogapp.services.impl.UsrSvcImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -28,6 +35,8 @@ import java.util.Collections;
 public class UsrCntlr {
     @Autowired
     private UsrSvcImpl usrSvc;
+    @Autowired
+    private FileSvcImpl fileSvc;
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "get",
@@ -56,13 +65,14 @@ public class UsrCntlr {
             );
         }
     }
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "add",
             summary = "To create new User from database, Call this API",
             description = "createUsr method is HTTP POST mapping so to store data in database."
     )
-    public ResponseEntity<Response> createUsr(@RequestBody @Valid UsrDto usrDto) {
+    public ResponseEntity<Response> createUsr(@RequestPart @Valid String usrDto,
+                                              @RequestPart(required = false) @Valid MultipartFile image) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -70,7 +80,7 @@ public class UsrCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("User Added successfully!")
-                            .data(Collections.singletonMap("users", usrSvc.createUsr(usrDto)))
+                            .data(Collections.singletonMap("users", usrSvc.createUsr(usrDto, image)))
                             .build()
             );
         } catch (ResourceAlreadyExists resourceAlreadyExists) {
@@ -82,15 +92,36 @@ public class UsrCntlr {
                             .message(resourceAlreadyExists.getMessage())
                             .build()
             );
+        } catch (MediaTypeNotSupported mediaTypeNotSupported) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                            .message(mediaTypeNotSupported.getMessage())
+                            .build()
+            );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
+                            .build()
+            );
         }
     }
-    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "update",
             summary = "To update existing User from database, Call this API",
             description = "updateUsr method is HTTP PUT mapping so to update data in database."
     )
-    public ResponseEntity<Response> updateUsr(@RequestBody @Valid UsrDto usrDto, @PathVariable("id") @Valid Long id)  {
+    public ResponseEntity<Response> updateUsr(@RequestPart @Valid String usrDto,
+                                              @RequestPart(required = false) @Valid MultipartFile image,
+                                              @RequestPart @Valid String isDeleteImage,
+                                              @PathVariable("id") @Valid Long id)  {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -98,7 +129,7 @@ public class UsrCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("User updated successfully!")
-                            .data(Collections.singletonMap("users", usrSvc.updateUsr(id, usrDto)))
+                            .data(Collections.singletonMap("users", usrSvc.updateUsr(id, usrDto, image, isDeleteImage)))
                             .build()
             );
         } catch (ResourceNotFound | ResourceAlreadyExists exception) {
@@ -108,6 +139,24 @@ public class UsrCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(exception.getMessage())
+                            .build()
+            );
+        } catch (MediaTypeNotSupported mediaTypeNotSupported) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                            .message(mediaTypeNotSupported.getMessage())
+                            .build()
+            );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
                             .build()
             );
         }
@@ -138,6 +187,27 @@ public class UsrCntlr {
                             .message(resourceNotFound.getMessage())
                             .build()
             );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
+                            .build()
+            );
         }
+    }
+    @GetMapping(value = "/image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @Operation(
+            operationId = "image",
+            summary = "To download existing image form file system, Call this API",
+            description = "downloadImage method is HTTP GET mapping so to fetch file from file system."
+    )
+    public void downloadImage(@PathVariable("name") String imageName,
+                              HttpServletResponse response) throws IOException {
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        InputStream inputStream = fileSvc.getImage(imageName);
+        StreamUtils.copy(inputStream, response.getOutputStream());
     }
 }

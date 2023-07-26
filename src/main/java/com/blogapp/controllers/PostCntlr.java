@@ -1,20 +1,25 @@
 package com.blogapp.controllers;
 
-import com.blogapp.dto.PostDto;
+import com.blogapp.exceptions.MediaTypeNotSupported;
 import com.blogapp.exceptions.ResourceNotFound;
 import com.blogapp.response.Response;
+import com.blogapp.services.impl.FileSvcImpl;
 import com.blogapp.services.impl.PostSvcImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -26,6 +31,8 @@ import java.util.Collections;
 public class PostCntlr {
     @Autowired
     private PostSvcImpl postSvc;
+    @Autowired
+    private FileSvcImpl fileSvc;
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "get",
@@ -194,15 +201,16 @@ public class PostCntlr {
             );
         }
     }
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add/{userId}/{catTitle}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "add",
             summary = "To publish new post in application and store in database, Call this API",
             description = "createPost method is HTTP POST mapping so to store data from database."
     )
-    public ResponseEntity<Response> createPost(@Valid @RequestBody PostDto postDto,
-                                               @Valid @RequestParam Long userId,
-                                               @Valid @RequestParam String catTitle) throws IOException {
+    public ResponseEntity<Response> createPost(@Valid @PathVariable("userId") String userId,
+                                               @Valid @PathVariable("catTitle") String catTitle,
+                                               @Valid @RequestPart String postDto,
+                                               @Valid @RequestPart(required = false) MultipartFile image) {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -210,7 +218,7 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post Added successfully!")
-                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, userId, catTitle)))
+                            .data(Collections.singletonMap("posts", postSvc.createPost(postDto, image,Long.valueOf(userId), catTitle)))
                             .build()
             );
         } catch (ResourceNotFound resourceNotFound) {
@@ -222,15 +230,37 @@ public class PostCntlr {
                             .message(resourceNotFound.getMessage())
                             .build()
             );
+        } catch (MediaTypeNotSupported mediaTypeNotSupported) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                            .message(mediaTypeNotSupported.getMessage())
+                            .build()
+            );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
+                            .build()
+            );
         }
     }
-    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/update/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             operationId = "update",
             summary = "To update published Post in database, Call this API",
             description = "updatePost method is HTTP PUT mapping so to update data in database."
     )
-    public ResponseEntity<Response> updatePost(@RequestBody @Valid PostDto postDto, @PathVariable("id") @Valid Long id)  {
+    public ResponseEntity<Response> updatePost(@RequestPart @Valid String postDto,
+                                               @RequestPart(required = false) @Valid MultipartFile image,
+                                               @RequestPart @Valid String isDeleteImage,
+                                               @PathVariable("postId") @Valid Long id,
+                                               @RequestPart(required = false) String catTitle)  {
         try {
             return ResponseEntity.ok(
                     Response.builder()
@@ -238,7 +268,7 @@ public class PostCntlr {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Post updated successfully!")
-                            .data(Collections.singletonMap("posts", postSvc.updatePost(id, postDto)))
+                            .data(Collections.singletonMap("posts", postSvc.updatePost(id, postDto, image, catTitle, isDeleteImage)))
                             .build()
             );
         } catch (ResourceNotFound resourceNotFound) {
@@ -248,6 +278,24 @@ public class PostCntlr {
                             .status(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value())
                             .message(resourceNotFound.getMessage())
+                            .build()
+            );
+        } catch (MediaTypeNotSupported mediaTypeNotSupported) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                            .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                            .message(mediaTypeNotSupported.getMessage())
+                            .build()
+            );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
                             .build()
             );
         }
@@ -278,6 +326,27 @@ public class PostCntlr {
                             .message(resourceNotFound.getMessage())
                             .build()
             );
+        } catch (IOException ioException){
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .responseTime(LocalDateTime.now())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message(ioException.getMessage())
+                            .build()
+            );
         }
+    }
+    @GetMapping(value = "/image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @Operation(
+            operationId = "image",
+            summary = "To download existing image form file system, Call this API",
+            description = "downloadImage method is HTTP GET mapping so to fetch file from file system."
+    )
+    public void downloadImage(@PathVariable("name") String imageName,
+                              HttpServletResponse response) throws IOException {
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        InputStream inputStream = fileSvc.getImage(imageName);
+        StreamUtils.copy(inputStream, response.getOutputStream());
     }
 }

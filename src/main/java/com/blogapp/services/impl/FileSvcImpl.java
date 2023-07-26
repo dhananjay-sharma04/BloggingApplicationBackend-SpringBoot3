@@ -2,25 +2,27 @@ package com.blogapp.services.impl;
 
 import com.blogapp.exceptions.MediaTypeNotSupported;
 import com.blogapp.services.FileSvc;
-import jdk.jfr.ContentType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class FileSvcImpl implements FileSvc {
     @Value("${project.image}")
     private String path;
     @Override
     public String uploadImage(MultipartFile file) throws MediaTypeNotSupported,IOException, NullPointerException {
+        log.info("Started execution of uploadImage method");
         if (file == null){
             throw new NullPointerException("File can't be empty");
         } else if (Objects.equals(file.getContentType(), MediaType.IMAGE_JPEG_VALUE) || Objects.equals(file.getContentType(), MediaType.IMAGE_PNG_VALUE)){
@@ -52,6 +54,18 @@ public class FileSvcImpl implements FileSvc {
             return inputStream;
         } catch (FileNotFoundException fileNotFoundException) {
             throw new FileNotFoundException();
+        }
+    }
+
+    @Override
+    public Boolean deleteImage(String filename) throws IOException {
+        log.info("Started execution of deleting image if exists");
+        String fullPath = path+File.separator+filename;
+        try {
+            Files.deleteIfExists(Path.of(fullPath));
+            return true;
+        } catch (IOException ioException){
+            throw new IOException(ioException.getMessage());
         }
     }
 }
