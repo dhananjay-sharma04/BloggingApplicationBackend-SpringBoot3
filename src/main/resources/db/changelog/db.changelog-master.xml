@@ -103,13 +103,13 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             </column>
             <column name="post_id" type="BIGINT">
                 <constraints foreignKeyName="comment_related_to_following_post"
-                             referencedTableName="categories"
+                             referencedTableName="posts"
                              referencedColumnNames="id"
                              nullable="false"/>
             </column>
             <column name="user_id" type="BIGINT">
                 <constraints foreignKeyName="comment_related_to_following_user"
-                             referencedTableName="categories"
+                             referencedTableName="users"
                              referencedColumnNames="id"
                              nullable="false"/>
             </column>
