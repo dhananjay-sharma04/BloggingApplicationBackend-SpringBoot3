@@ -17,7 +17,5 @@ public class Response {
     private HttpStatus status;
     private int statusCode;
     private String message;
-    private String method;
-    private String executionMessage;
     private Map<?, ?> data;
 }

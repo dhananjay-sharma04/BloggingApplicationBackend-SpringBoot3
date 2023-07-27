@@ -21,6 +21,7 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             <column name="usr_pass" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="usr_image" type="VARCHAR(100)"/>
             <column name="usr_abt" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -61,12 +62,10 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             <column name="post_title" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="post_content" type="VARCHAR(1000)">
+            <column name="post_content" type="VARCHAR(10000)">
                 <constraints nullable="false"/>
             </column>
-            <column name="post_image" type="VARCHAR(100)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="post_image" type="VARCHAR(100)"/>
             <column name="submitted_date" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
