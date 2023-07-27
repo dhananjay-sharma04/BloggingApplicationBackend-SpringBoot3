@@ -40,6 +40,7 @@ public class SecurityConfiguration {
             "posts/get_pageable",
             "categories/get",
             "posts/image/**",
+            "users/image/**",
             "swagger-ui/**",
             "/api",
             "swagger-resource/**",

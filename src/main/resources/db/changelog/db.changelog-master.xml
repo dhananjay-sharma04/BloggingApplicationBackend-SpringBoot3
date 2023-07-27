@@ -135,6 +135,9 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
 
     <changeSet id="DS20230621-6" author="Dhananjay Sharma">
         <createTable tableName="user_role">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
             <column name="user_id" type="BIGINT">
                 <constraints foreignKeyName="user_role_with_user_id"
                              referencedTableName="users"

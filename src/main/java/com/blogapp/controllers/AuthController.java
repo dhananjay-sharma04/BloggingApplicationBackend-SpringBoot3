@@ -64,7 +64,7 @@ public class AuthController {
             summary = "To register new User in Application, Call this API",
             description = "signUpUsr method is HTTP POST mapping so to store data in database."
     )
-    public ResponseEntity<Response> signUpUsr(@RequestBody @Valid String usrDto,
+    public ResponseEntity<Response> signUpUsr(@RequestPart @Valid String usrDto,
                                               @RequestPart(required = false) @Valid MultipartFile image) {
         try {
             return ResponseEntity.ok(
